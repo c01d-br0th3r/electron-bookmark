@@ -1,11 +1,16 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 
+ipcMain.on("new-item", (e, itemUrl) => {
+  setTimeout(() => {
+    e.sender.send("new-item-success", "New Item from main process");
+  }, 2000);
+});
+
 function createWindow() {
   // Create the browser window
-
   // Win state keeper
   let state = windowStateKeeper({
     defaultWidth: 500,
@@ -21,6 +26,7 @@ function createWindow() {
     maxWidth: 650,
     minHeight: 300,
     webPreferences: {
+      nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
     },
   });
@@ -31,7 +37,7 @@ function createWindow() {
   state.manage(mainWindow);
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
