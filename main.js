@@ -1,12 +1,14 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain } = require("electron");
 const windowStateKeeper = require("electron-window-state");
+const readItem = require("./readItem.js");
 const path = require("path");
 
 ipcMain.on("new-item", (e, itemUrl) => {
-  setTimeout(() => {
-    e.sender.send("new-item-success", "New Item from main process");
-  }, 2000);
+  console.log(itemUrl);
+  readItem(itemUrl, (item) => {
+    e.sender.send("new-item-success", item);
+  });
 });
 
 function createWindow() {
